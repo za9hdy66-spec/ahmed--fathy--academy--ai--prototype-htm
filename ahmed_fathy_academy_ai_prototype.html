@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#142d50">
+<title>Ahmed Fathy Academy AI</title>
+<style>
+:root{--navy:#142d50;--blue:#2364a5;--bg:#f3f6fb;--ink:#17243a;--muted:#64748b;--line:#dce4ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,#142d50,#245b91);color:white;padding:26px 18px 30px;border-radius:0 0 25px 25px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:52px;height:52px;border-radius:16px;background:#ffffff20;display:grid;place-items:center;font-size:28px}
+h1{font-size:21px;margin:0 0 5px}header p{margin:0;color:#d9e7f7;font-size:13px;line-height:1.7}
+main{max-width:720px;margin:18px auto;padding:0 14px 32px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:14px;box-shadow:0 5px 18px #17365d0a}
+h2{font-size:17px;margin:0 0 14px}.field{margin:12px 0}label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit;background:#fff;color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:bold;cursor:pointer}
+.primary{background:var(--blue);color:white;width:100%;margin-top:8px}.secondary{background:#eaf1fa;color:#1c4e80}
+.note{font-size:12px;line-height:1.8;color:var(--muted);background:#f5f8fc;padding:11px;border-radius:10px}
+#result{display:none}.scene{padding:12px 0;border-bottom:1px solid var(--line)}.scene:last-child{border:0}.scene strong{display:block;margin-bottom:6px}.scene p{margin:0;line-height:1.9;font-size:14px}
+.pill{display:inline-block;background:#eaf1fa;color:#1d548b;padding:5px 9px;border-radius:20px;font-size:11px;margin:2px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:12px}
+@media(max-width:430px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><div class="logo">🎓</div><div><h1>Ahmed Fathy Academy AI</h1><p>استوديو إعداد الفيديوهات التعليمية</p></div></div>
+</header>
+<main>
+ <section class="card">
+  <h2>🎬 جهّز فيديو تعليمي</h2>
+  <div class="field"><label for="lesson">اسم الدرس</label><input id="lesson" value="الماء على كوكب الأرض" placeholder="اكتب اسم الدرس"></div>
+  <div class="grid">
+   <div class="field"><label for="subject">المادة</label><select id="subject"><option>العلوم المتكاملة</option><option>الرياضيات</option><option>اللغة العربية</option><option>التاريخ</option><option>اللغة الإنجليزية</option></select></div>
+   <div class="field"><label for="grade">الصف الدراسي</label><select id="grade"><option>الأول الثانوي</option><option>الثاني الثانوي</option><option>الثالث الثانوي</option><option>الإعدادي</option><option>الابتدائي</option></select></div>
+  </div>
+  <div class="grid">
+   <div class="field"><label for="duration">مدة الفيديو</label><select id="duration"><option>دقيقة واحدة</option><option>5 دقائق</option><option selected>10 دقائق</option><option>15 دقيقة</option></select></div>
+   <div class="field"><label for="voice">الصوت</label><select id="voice"><option>رجل مصري</option><option>عربية فصحى</option><option>امرأة مصرية</option></select></div>
+  </div>
+  <div class="field"><label for="teacher">شكل المدرس</label><select id="teacher"><option>مدرس واقعي كامل الجسم</option><option>مدرس أمام سبورة ذكية</option><option>مدرس مختلف في كل مشهد</option></select></div>
+  <div class="field"><label for="format">مقاس الفيديو</label><select id="format"><option>أفقي 16:9 لليوتيوب</option><option>رأسي 9:16 للموبايل</option></select></div>
+  <button class="primary" onclick="makePlan()">إنشاء خطة المشاهد</button>
+  <p class="note">هذه نسخة تجريبية أولى: تنشئ خطة وسيناريو مبدئيًا داخل الهاتف. إنشاء مدرس واقعي متحرك وصوت متزامن وتصدير فيديو فعلي يحتاج ربط خدمات توليد فيديو وبرمجة خلفية في مرحلة لاحقة.</p>
+ </section>
+ <section class="card" id="result">
+  <h2>📋 خطة الفيديو</h2>
+  <div id="meta"></div>
+  <div id="scenes"></div>
+  <button class="secondary" onclick="copyPlan()">نسخ السيناريو</button>
+ </section>
+ <footer>الإصدار التجريبي 0.1 · Ahmed Fathy Academy AI</footer>
+</main>
+<script>
+let output='';
+function makePlan(){
+ const lesson=document.getElementById('lesson').value.trim();
+ if(!lesson){alert('اكتب اسم الدرس أولاً');return}
+ const subject=document.getElementById('subject').value, grade=document.getElementById('grade').value;
+ const duration=document.getElementById('duration').value, voice=document.getElementById('voice').value;
+ const teacher=document.getElementById('teacher').value, format=document.getElementById('format').value;
+ const names=['مقدمة وتشويق','الفكرة الأساسية','شرح المفهوم','أمثلة من الحياة','تفاصيل مهمة','توضيح بصري','تطبيق ومقارنة','أهمية الموضوع','مراجعة سريعة','الخاتمة'];
+ const prompts=[
+ 'يظهر المدرس كامل الجسم ويرحب بالطلاب ويعرض عنوان الدرس على السبورة.',
+ 'لقطة واسعة توضح الفكرة الرئيسية برسوم تعليمية مناسبة.',
+ 'يشرح المدرس المفهوم الأساسي ويشير إلى الكلمات المهمة على السبورة.',
+ 'عرض أمثلة واقعية وصور توضيحية مرتبطة بموضوع الدرس.',
+ 'تقريب على رسم أو مخطط مع شرح تدريجي وبسيط.',
+ 'رسوم متحركة تعليمية توضح العملية أو العلاقة الأساسية.',
+ 'يعرض المدرس مثالًا تطبيقيًا ويشرح خطوات فهمه.',
+ 'ربط الدرس بالحياة اليومية وأهميته للإنسان والبيئة.',
+ 'تلخيص أهم النقاط في عناوين قصيرة على الشاشة.',
+ 'المدرس ينهي الحصة ويطرح سؤالًا للتفكير.'
+ ];
+ output=`${lesson}\nالمادة: ${subject}\nالصف: ${grade}\nالمدة: ${duration}\nالصوت: ${voice}\nالشخصية: ${teacher}\nالمقاس: ${format}\n\n`;
+ document.getElementById('meta').innerHTML=`<span class="pill">${subject}</span><span class="pill">${grade}</span><span class="pill">${duration}</span><span class="pill">${voice}</span><span class="pill">${format}</span>`;
+ document.getElementById('scenes').innerHTML=names.map((n,i)=>{let s=`المشهد ${i+1}: ${n}\n${prompts[i]}\n`;output+=s+'\n';return `<div class="scene"><strong>${i+1}. ${n}</strong><p>${prompts[i]}</p></div>`}).join('');
+ document.getElementById('result').style.display='block';
+ document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+function copyPlan(){if(!output)return; if(navigator.clipboard){navigator.clipboard.writeText(output).then(()=>alert('تم نسخ خطة المشاهد'))}else{alert('ميزة النسخ غير متاحة في هذا المتصفح')}}
+</script>
+</body></html>
